@@ -1,1 +1,1 @@
-from crsq.heap.heap import Frame, TemporaryQubitAllocator
+from crsq.heap.heap import Frame, TemporaryQubitAllocator, Binding
