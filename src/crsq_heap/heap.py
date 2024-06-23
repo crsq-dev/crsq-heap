@@ -362,17 +362,21 @@ class Frame():
         for inst in circuit.data:
             self._circuit.append(inst.operation, inst.qubits)
 
-    def invoke(self, binding: Binding, invoke_as_instruction=False):
+    def invoke(self, binding: Binding, invoke_as_instruction=False, inverse=False, label=None):
         """
             Invoke the given circuit with arguments on this receiving
             circuit.
         """
         assert self._parent_frame is None
-        self.invoke_with_control(binding, [], '', invoke_as_instruction=invoke_as_instruction)
+        self.invoke_with_control(binding, [], '',
+                                 invoke_as_instruction=invoke_as_instruction,
+                                 inverse=inverse,
+                                 label=label)
 
     def invoke_with_control(self, binding: Binding,
                             ctrl_bits: List[Qubit], ctrl_str: str,
-                            invoke_as_instruction=False):
+                            invoke_as_instruction=False,
+                            inverse=False, label=None):
         """
             Invoke with control bits.
             
@@ -428,22 +432,29 @@ class Frame():
         if param_index != len(flat_params):
             raise ValueError("Parameter mismatch. Unused parameter exists.")
         # handle control bits.
+        if label is None:
+            label = binding.label
         if ctrl_str == '':
             if invoke_as_instruction:
                 # logger.info("call to_instruction(1)")
-                target_inst = target_qc.to_instruction(label=binding.label)
+                target_inst = target_qc.to_instruction(label=label)
                 # logger.info("call append(1)")
                 self._circuit.append(target_inst, target_qargs)
                 # logger.info("end append(1)")
+                if inverse:
+                    raise ValueError("inverse flag is not supported for instruction invocation")
             else:
                 # logger.info("call to_gate(2)")
-                target_gate = target_qc.to_gate(label=binding.label)
+                target_gate = target_qc.to_gate(label=label)
+                if inverse:
+                    target_gate = target_gate.inverse()
+                    target_gate.label = label
                 # logger.info("call append(2)")
                 self._circuit.append(target_gate, target_qargs)
                 # logger.info("end append(2)")
         else:
             # logger.info("call to_gate(3)")
-            target_gate = target_qc.to_gate(label=binding.label)
+            target_gate = target_qc.to_gate(label=label)
             nb = len(ctrl_str)
             controlled_gate = target_gate.control(nb, ctrl_state=ctrl_str)
             all_bits = ctrl_bits + target_qargs

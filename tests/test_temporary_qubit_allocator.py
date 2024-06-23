@@ -1,7 +1,7 @@
-""" Tests for crsq.heap.TemporaryQubitAllocator """
+""" Tests for crsq_heap.heap.TemporaryQubitAllocator """
 
-import crsq.heap as heap
 from qiskit import QuantumCircuit
+from crsq_heap import heap
 
 def test_allocate_first():
     """ allocate for the first time"""

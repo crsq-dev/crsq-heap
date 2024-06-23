@@ -1,11 +1,11 @@
-""" test crsq.heap.Frame
+""" test crsq_heap.heap.Frame
 """
 
 from qiskit.circuit import QuantumCircuit, QuantumRegister
-import crsq.heap as heap
+from crsq_heap import heap
 
 class AFrame(heap.Frame):
-
+    """ AFrame """
     def __init__(self, qc: QuantumCircuit):
         super().__init__(qc)
         self.x = QuantumRegister(4, "x")

@@ -4,7 +4,7 @@ build-backend = "hatchling.build"
 
 [project]
 name="crsq-heap"
-version="0.0.2"
+version="0.1.0"
 
 dependencies = [
     "qiskit >= 1.0"
@@ -27,4 +27,4 @@ Homepage="https://github.com/crsq-dev/crsq-heap"
 Issues="https://github.com/crsq-dev/crsq-heap/issues"
 
 [tool.hatch.build.targets.wheel]
-packages = ["src/crsq/heap"]
+packages = ["src/crsq_heap"]
