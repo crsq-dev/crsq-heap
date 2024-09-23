@@ -277,8 +277,17 @@ class Frame():
         if not self._args_fixed:
             self._args_fixed = True
         for reg in regs:
-            self._locals.append(reg)
-            self._circuit.add_register(reg)
+            if reg is None:
+                pass
+            elif isinstance(reg, QuantumRegister):
+                self._locals.append(reg)
+                self._circuit.add_register(reg)
+            elif isinstance(reg, tuple):
+                (_name, registers) = reg
+                self._locals.append(reg)
+                self._add_nested_registers_to_circuit(registers)
+            else:
+                raise ValueError(f"Unexpected type in local list: {type(reg)}")
 
     def allocate_temp_bits(self, n: int) -> list[Qubit]:
         """ allocate temporary bits """
