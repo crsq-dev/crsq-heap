@@ -371,7 +371,7 @@ class Frame():
         for inst in circuit.data:
             self._circuit.append(inst.operation, inst.qubits)
 
-    def invoke(self, binding: Binding, invoke_as_instruction=False, inverse=False, label=None):
+    def invoke(self, binding: Binding, invoke_as_instruction=False, inverse=False, label=None, dry_run=False):
         """
             Invoke the given circuit with arguments on this receiving
             circuit.
@@ -380,12 +380,13 @@ class Frame():
         self.invoke_with_control(binding, [], '',
                                  invoke_as_instruction=invoke_as_instruction,
                                  inverse=inverse,
-                                 label=label)
+                                 label=label,
+                                 dry_run=dry_run)
 
     def invoke_with_control(self, binding: Binding,
                             ctrl_bits: List[Qubit], ctrl_str: str,
                             invoke_as_instruction=False,
-                            inverse=False, label=None):
+                            inverse=False, label=None, dry_run=False):
         """
             Invoke with control bits.
             
@@ -443,6 +444,11 @@ class Frame():
         # handle control bits.
         if label is None:
             label = binding.label
+
+        if dry_run:
+            self.free_temp_bits(used_temp_qubits)
+            return
+
         if ctrl_str == '':
             if invoke_as_instruction:
                 # logger.info("call to_instruction(1)")
